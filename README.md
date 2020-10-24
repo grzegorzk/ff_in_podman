@@ -1,3 +1,13 @@
+# Run Firefox in unprivileged podman container
+
+* With audio (assuming host uses pulse)
+* With video
+
+# Why
+
+* Improve host system isolation from potentially harmful code running in the browser
+* Make tracking of your internet presence a little bit harder
+
 # Run
 
 ```bash
