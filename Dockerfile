@@ -1,18 +1,25 @@
-FROM archlinux/base
+ARG GROUP_ID=1001
+ARG USER_ID=1001
+
+FROM ubuntu:20.04
 
 SHELL ["/bin/bash", "-c"]
 
-ARG ARCH_ARCHIVE_DATE=2020/10/23
-
-RUN echo "Server=https://archive.archlinux.org/repos/$ARCH_ARCHIVE_DATE/\$repo/os/\$arch" > /etc/pacman.d/mirrorlist \
-    && pacman -Syy --disable-download-timeout --noconfirm wget \
-    && sed -i -- 's/#\(XferCommand = \/usr\/bin\/wget \-\-passive\-ftp \-c \-O %o %u\)/\1/g' /etc/pacman.conf \
-    && pacman -Sy --disable-download-timeout --noconfirm \
+RUN apt-get update -qq \
+    && DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends \
         firefox \
-        nvidia \
         pulseaudio \
-        pulseaudio-alsa \
-        pulseaudio-bluetooth \
-        xorg-server \
-        xorg-apps \
-    && rm -rf /var/cache/pacman/pkg/*
+        xorg \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker_files/entrypoint.sh /entrypoint.sh
+
+ARG GROUP_ID
+ARG USER_ID
+
+RUN groupadd -g $GROUP_ID ff \
+    && useradd -u $USER_ID -g $GROUP_ID -m ff \
+    && chmod ugo+x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD []
