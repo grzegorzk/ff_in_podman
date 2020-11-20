@@ -11,6 +11,7 @@
 # Run
 
 ```bash
+make build_firefox
 make run_firefox
 ```
 
