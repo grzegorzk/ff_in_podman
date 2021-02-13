@@ -77,14 +77,17 @@ RUN echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
         xorg-apps \
     && rm -rf /var/cache/pacman/pkg/*
 
-COPY docker_files/entrypoint.sh /entrypoint.sh
-
 ARG GROUP_ID
 ARG USER_ID
 
 RUN groupadd -g $GROUP_ID ff \
-    && useradd -u $USER_ID -g $GROUP_ID -m ff \
+    && useradd -u $USER_ID -g $GROUP_ID -G audio,video -m ff \
     && chmod ugo+x /entrypoint.sh
+
+COPY docker_files/pulse-client.conf /etc/pulse/client.conf
+RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse/client.conf
+
+COPY docker_files/entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
