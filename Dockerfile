@@ -75,10 +75,14 @@ RUN echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
         pulseaudio-bluetooth \
         xorg-server \
         xorg-apps \
+        ffmpeg \
+        mesa \
     && rm -rf /var/cache/pacman/pkg/*
 
 ARG GROUP_ID
 ARG USER_ID
+
+COPY docker_files/entrypoint.sh /entrypoint.sh
 
 RUN groupadd -g $GROUP_ID ff \
     && useradd -u $USER_ID -g $GROUP_ID -G audio,video -m ff \
@@ -86,8 +90,6 @@ RUN groupadd -g $GROUP_ID ff \
 
 COPY docker_files/pulse-client.conf /etc/pulse/client.conf
 RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse/client.conf
-
-COPY docker_files/entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
