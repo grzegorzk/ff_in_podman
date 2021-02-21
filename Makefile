@@ -14,22 +14,22 @@ list:
 		| sed -e "s/\(.*\):/\1/g" \
 		| sort
 
-build_firefox:
+build:
 	@ ${DOCKER} build \
 		--build-arg USER_ID=${UUID} \
 		--build-arg GROUP_ID=${GUID} \
 		-t ${FF_IMAGE} .;
 
-run_firefox:
+run:
 	@ ${DOCKER} run \
-		--net=host -it --rm --shm-size 2g \
+		--userns=keep-id \
+		--net=host -it --rm \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v /dev/dri:/dev/dri \
-		-v $(HOME)/.Xauthority:/root/.Xauthority \
+		-v $(HOME)/.Xauthority:/home/ff/.Xauthority \
 		--device /dev/video0 \
-		--security-opt=label=type:container_runtime_t \
 		-e DISPLAY \
-		-v $(HOME)/.config/pulse/cookie:/root/.config/pulse/cookie \
+		-v $(HOME)/.config/pulse/cookie:/home/ff/.config/pulse/cookie \
 		-v /etc/machine-id:/etc/machine-id \
 		-v /run/user/${UUID}/pulse:/run/user/${UUID}/pulse \
 		-v /var/lib/dbus:/var/lib/dbus \

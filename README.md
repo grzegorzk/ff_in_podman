@@ -2,6 +2,7 @@
 
 * With audio (assuming host uses pulse)
 * With video
+* root account not involved
 
 # Why
 
@@ -10,9 +11,11 @@
 
 # Run
 
+You need a functioning podman installation in order to use this tool.
+
 ```bash
-make build_firefox
-make run_firefox
+make build
+make run
 ```
 
 # Thanks

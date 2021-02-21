@@ -91,5 +91,7 @@ RUN groupadd -g $GROUP_ID ff \
 COPY docker_files/pulse-client.conf /etc/pulse/client.conf
 RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse/client.conf
 
+USER ff
+
 ENTRYPOINT ["/entrypoint.sh"]
 CMD []
