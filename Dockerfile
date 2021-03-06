@@ -5,12 +5,6 @@ ARG ARCH_ARCHIVE_YEAR=2021
 ARG ARCH_ARCHIVE_MONTH=02
 ARG ARCH_ARCHIVE_DAY=01
 
-ARG ARCH_BOOTSTRAP_VERSION=${ARCH_ARCHIVE_YEAR}.${ARCH_ARCHIVE_MONTH}.${ARCH_ARCHIVE_DAY}
-ARG ARCH_BOOTSTRAP_URL=http://pkg.adfinis-sygroup.ch/archlinux/iso/${ARCH_BOOTSTRAP_VERSION}/archlinux-bootstrap-${ARCH_BOOTSTRAP_VERSION}-x86_64.tar.gz
-
-ARG ARCH_ARCHIVE_VERSION=${ARCH_ARCHIVE_YEAR}/${ARCH_ARCHIVE_MONTH}/${ARCH_ARCHIVE_DAY}
-ARG ARCH_ARCHIVE_MIRROR=https://archive.archlinux.org/repos/${ARCH_ARCHIVE_VERSION}/\$repo/os/\$arch
-
 FROM alpine:3 AS downloader
 
 RUN apk update \
@@ -18,8 +12,14 @@ RUN apk update \
         curl \
         gnupg
 
-ARG ARCH_BOOTSTRAP_URL
-RUN cd /tmp \
+ARG ARCH_ARCHIVE_YEAR
+ARG ARCH_ARCHIVE_MONTH
+ARG ARCH_ARCHIVE_DAY
+ARG ARCH_BOOTSTRAP_VERSION=${ARCH_ARCHIVE_YEAR}.${ARCH_ARCHIVE_MONTH}.${ARCH_ARCHIVE_DAY}
+ARG ARCH_BOOTSTRAP_URL=http://pkg.adfinis-sygroup.ch/archlinux/iso/${ARCH_BOOTSTRAP_VERSION}/archlinux-bootstrap-${ARCH_BOOTSTRAP_VERSION}-x86_64.tar.gz
+
+RUN echo "Downloading bootstrap from ${ARCH_BOOTSTRAP_URL}" \
+    && cd /tmp \
     && curl -0 --insecure ${ARCH_BOOTSTRAP_URL} > image.tar.gz \
     && curl -0 --insecure ${ARCH_BOOTSTRAP_URL}.sig > image.tar.gz.sig \
     && gpg --keyserver pool.sks-keyservers.net --recv-keys 9741E8AC \
@@ -32,8 +32,14 @@ FROM scratch AS bootstrap
 
 COPY --from=downloader /tmp/root.x86_64 /
 
-ARG ARCH_ARCHIVE_MIRROR
-RUN echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
+ARG ARCH_ARCHIVE_YEAR
+ARG ARCH_ARCHIVE_MONTH
+ARG ARCH_ARCHIVE_DAY
+ARG ARCH_ARCHIVE_VERSION=${ARCH_ARCHIVE_YEAR}/${ARCH_ARCHIVE_MONTH}/${ARCH_ARCHIVE_DAY}
+ARG ARCH_ARCHIVE_MIRROR=https://archive.archlinux.org/repos/${ARCH_ARCHIVE_VERSION}/\$repo/os/\$arch
+
+RUN echo "Using packages mirror: ${ARCH_ARCHIVE_MIRROR}" \
+    && echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
     && cp /etc/pacman.conf /etc/pacman.conf.bak \
     && awk '{gsub(/SigLevel.*= Required DatabaseOptional/,"SigLevel = Never");gsub(/\[community\]/,"\[community\]\nSigLevel = Never");}1' /etc/pacman.conf.bak > /etc/pacman.conf \
     && pacman -Sy --noconfirm haveged wget sed \
@@ -50,8 +56,14 @@ FROM scratch AS arch
 
 COPY --from=bootstrap /build /
 
-ARG ARCH_ARCHIVE_MIRROR
-RUN echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
+ARG ARCH_ARCHIVE_YEAR
+ARG ARCH_ARCHIVE_MONTH
+ARG ARCH_ARCHIVE_DAY
+ARG ARCH_ARCHIVE_VERSION=${ARCH_ARCHIVE_YEAR}/${ARCH_ARCHIVE_MONTH}/${ARCH_ARCHIVE_DAY}
+ARG ARCH_ARCHIVE_MIRROR=https://archive.archlinux.org/repos/${ARCH_ARCHIVE_VERSION}/\$repo/os/\$arch
+
+RUN echo "Using packages mirror: ${ARCH_ARCHIVE_MIRROR}" \
+    && echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
     && haveged -w 1024 \
     && pacman-key --init \
     && pacman-key --populate archlinux \
@@ -66,8 +78,14 @@ RUN locale-gen
 
 FROM arch AS firefox
 
-ARG ARCH_ARCHIVE_MIRROR
-RUN echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
+ARG ARCH_ARCHIVE_YEAR
+ARG ARCH_ARCHIVE_MONTH
+ARG ARCH_ARCHIVE_DAY
+ARG ARCH_ARCHIVE_VERSION=${ARCH_ARCHIVE_YEAR}/${ARCH_ARCHIVE_MONTH}/${ARCH_ARCHIVE_DAY}
+ARG ARCH_ARCHIVE_MIRROR=https://archive.archlinux.org/repos/${ARCH_ARCHIVE_VERSION}/\$repo/os/\$arch
+
+RUN echo "Using packages mirror: ${ARCH_ARCHIVE_MIRROR}" \
+    && echo "Server = ${ARCH_ARCHIVE_MIRROR}" > /etc/pacman.d/mirrorlist \
     && pacman -Sy --disable-download-timeout --noconfirm \
         firefox \
         pulseaudio \
