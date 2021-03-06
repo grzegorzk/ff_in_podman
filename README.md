@@ -11,11 +11,20 @@
 
 # Run
 
-You need a functioning podman installation in order to use this tool.
+IMPORANT - close firefox if it's already running.
+
+If you have podman:
 
 ```bash
 make build
 make run
+```
+
+If you prefer docker:
+
+```bash
+make build DOCKER=docker
+make run DOCKER=docker
 ```
 
 # Thanks
