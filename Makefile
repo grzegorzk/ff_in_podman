@@ -25,10 +25,11 @@ build:
 run:
 	@ ${DOCKER} run \
 		${WITH_USERNS} \
+		--security-opt label=type:container_runtime_t \
 		--net=host -it --rm \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v /dev/dri:/dev/dri \
-		-v $(HOME)/.Xauthority:/home/ff/.Xauthority \
+		-v $(HOME)/.Xauthority:/home/ff/.Xauthority:Z \
 		--device /dev/video0 \
 		-e DISPLAY \
 		-v $(HOME)/.config/pulse/cookie:/home/ff/.config/pulse/cookie \
@@ -38,4 +39,4 @@ run:
 		--device /dev/snd \
 		-e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
 		-v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
-		${FF_IMAGE}
+		${FF_IMAGE} 
