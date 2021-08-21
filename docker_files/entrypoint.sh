@@ -2,4 +2,4 @@
 
 set -e
 
-firefox
+TZ=UTC firefox

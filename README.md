@@ -31,6 +31,11 @@ make run DOCKER=docker
 
 People maintaining ArchLinux:
 * https://archlinux.org/
+Authors of this page:
+* https://wiki.archlinux.org/title/Firefox/Privacy
+
+Authors of arkenfox user.js
+* https://github.com/arkenfox/user.js
 
 Great teams building products I love:
 * https://www.mozilla.org
