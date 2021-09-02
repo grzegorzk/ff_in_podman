@@ -7,6 +7,7 @@ UUID=$(shell id -u)
 GUID=$(shell id -g)
 
 WITH_USERNS=$$(eval [ "podman" == "${DOCKER}" ] && echo "--userns=keep-id")
+WITHOUT_HARDENING=
 
 list:
 	@ $(MAKE) -pRrq -f Makefile : 2>/dev/null \
@@ -39,4 +40,8 @@ run:
 		--device /dev/snd \
 		-e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
 		-v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
+		${WITHOUT_HARDENING} \
 		${FF_IMAGE} 
+
+run_no_hardening:
+	$(MAKE) -s run WITHOUT_HARDENING='-v "${CURDIR}"/docker_files/empty-local-settings.js:/usr/lib/firefox/defaults/pref/local-settings.js'

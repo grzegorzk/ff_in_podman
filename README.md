@@ -27,15 +27,27 @@ make build DOCKER=docker
 make run DOCKER=docker
 ```
 
+# Hardening
+
+Firefox will, by default, run with hardened user.js preferences. If you prefer raw firefox settings then run like this:
+
+```bash
+make run_no_hardening
+```
+
 # Thanks
 
 People maintaining ArchLinux:
 * https://archlinux.org/
-Authors of this page:
+Authors of these ArchWiki pages:
+* https://wiki.archlinux.org/title/Firefox
 * https://wiki.archlinux.org/title/Firefox/Privacy
 
 Authors of arkenfox user.js
 * https://github.com/arkenfox/user.js
+
+Authors of this page:
+* http://kb.mozillazine.org/Locking_preferences
 
 Great teams building products I love:
 * https://www.mozilla.org
