@@ -33,7 +33,10 @@ RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse
     && rm -rf /usr/lib/firefox/pingsender \
     && wget https://github.com/arkenfox/user.js/archive/refs/tags/90.0.tar.gz -O 90.0.tar.gz \
     && tar -zxf 90.0.tar.gz \
-    && mv user.js-90.0/user.js /usr/lib/firefox/browser/defaults/preferences \
+    && echo '//' > /usr/lib/firefox/mozilla.cfg \
+    && cat user.js-90.0/user.js | sed -e "s/user_pref/pref/g"  >> /usr/lib/firefox/mozilla.cfg \
+    && echo 'pref("general.config.obscure_value", 0);' >> /usr/lib/firefox/defaults/pref/local-settings.js \
+    && echo 'pref("general.config.filename", "mozilla.cfg");' >> /usr/lib/firefox/defaults/pref/local-settings.js \
     && rm 90.0* && rm -r user.js*
 
 USER ff
