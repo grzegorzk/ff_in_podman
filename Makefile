@@ -5,6 +5,7 @@ DOCKER=podman
 FF_IMAGE=firefox
 UUID=$(shell id -u)
 GUID=$(shell id -g)
+UNAME=ff
 
 WITH_USERNS=$$(eval [ "podman" == "${DOCKER}" ] && echo "--userns=keep-id")
 WITHOUT_HARDENING=
@@ -21,6 +22,7 @@ build:
 	@ ${DOCKER} build \
 		--build-arg USER_ID=${UUID} \
 		--build-arg GROUP_ID=${GUID} \
+		--build-arg UNAME=${UNAME} \
 		-t ${FF_IMAGE} .;
 
 run:
@@ -30,10 +32,12 @@ run:
 		--net=host -it --rm \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v /dev/dri:/dev/dri \
-		-v $(HOME)/.Xauthority:/home/ff/.Xauthority:Z \
+		-v $(HOME)/.Xauthority:/home/${UNAME}/.Xauthority:Z \
 		--device /dev/video0 \
 		-e DISPLAY \
-		-v $(HOME)/.config/pulse/cookie:/home/ff/.config/pulse/cookie \
+		-e XAUTHORITY \
+		-v ${XAUTHORITY}:${XAUTHORITY} \
+		-v $(HOME)/.config/pulse/cookie:/home/${UNAME}/.config/pulse/cookie \
 		-v /etc/machine-id:/etc/machine-id \
 		-v /run/user/${UUID}/pulse:/run/user/${UUID}/pulse \
 		-v /var/lib/dbus:/var/lib/dbus \
