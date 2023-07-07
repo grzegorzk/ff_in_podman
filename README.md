@@ -35,6 +35,11 @@ Firefox will, by default, run with hardened user.js preferences. If you prefer r
 make run_no_hardening
 ```
 
+# Troubleshooting
+
+* If you are using podman and fall into weird issues while running this container please check if your `/etc/containers/seccomp.json` diverted from https://raw.githubusercontent.com/containers/common/main/pkg/seccomp/seccomp.json
+To check if seccomp.json might be an issue add `--security-opt seccomp=unconfined` to `podman run` options. It is also possible to use downloaded seccomp.json by adding following to `podman run` options: `--security-opt seccomp=/path/to/the/seccomp.json`
+
 # Thanks
 
 People maintaining ArchLinux:
