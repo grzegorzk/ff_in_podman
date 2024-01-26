@@ -8,6 +8,7 @@ RUN pacman -Sy --disable-download-timeout --noconfirm \
         pulseaudio \
         pulseaudio-alsa \
         pulseaudio-bluetooth \
+        grep xdg-desktop-portal \
         xorg-server \
         xorg-apps \
         ffmpeg \
@@ -37,6 +38,7 @@ RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse
     && cat user.js-90.0/user.js | sed -e "s/user_pref/pref/g"  >> /usr/lib/firefox/mozilla.cfg \
     && echo 'pref("general.config.obscure_value", 0);' >> /usr/lib/firefox/defaults/pref/local-settings.js \
     && echo 'pref("general.config.filename", "mozilla.cfg");' >> /usr/lib/firefox/defaults/pref/local-settings.js \
+    && echo 'pref("ui.systemUsesDarkTheme", 1);' >> /usr/lib/firefox/defaults/pref/local-settings.js \
     && rm 90.0* && rm -r user.js*
 
 USER ff
