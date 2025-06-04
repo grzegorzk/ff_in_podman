@@ -28,7 +28,7 @@ RUN groupadd -g $GROUP_ID ff \
 COPY docker_files/pulse-client.conf /etc/pulse/client.conf
 # Remove firefox system-wide hidden extensions and folders related to telemetry, download hardened user.js
 RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse/client.conf \
-    && rm /usr/lib/firefox/browser/features/*.xpi \
+    && rm -rf /usr/lib/firefox/browser/features/*.xpi \
     && rm -rf /usr/lib/firefox/crashreporter \
     && rm -rf /usr/lib/firefox/minidump-analyzer \
     && rm -rf /usr/lib/firefox/pingsender \
