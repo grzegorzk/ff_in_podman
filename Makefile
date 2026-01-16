@@ -20,6 +20,7 @@ list:
 
 build:
 	@ ${DOCKER} build \
+		--no-cache \
 		--build-arg USER_ID=${UUID} \
 		--build-arg GROUP_ID=${GUID} \
 		--build-arg UNAME=${UNAME} \
@@ -32,11 +33,10 @@ run:
 		--net=host -d --rm \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v /dev/dri:/dev/dri \
-		-v $(HOME)/.Xauthority:/home/${UNAME}/.Xauthority:Z \
 		--device /dev/video0 \
 		-e DISPLAY \
 		-e XAUTHORITY \
-		-v ${XAUTHORITY}:${XAUTHORITY} \
+		-v ${XAUTHORITY}:${XAUTHORITY}:Z \
 		-v $(HOME)/.config/pulse/cookie:/home/${UNAME}/.config/pulse/cookie \
 		-v /etc/machine-id:/etc/machine-id \
 		-v /run/user/${UUID}/pulse:/run/user/${UUID}/pulse \
