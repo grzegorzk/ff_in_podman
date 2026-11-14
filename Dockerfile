@@ -5,6 +5,7 @@ FROM docker.io/techgk/arch:latest AS firefox
 
 RUN pacman -Sy --disable-download-timeout --noconfirm \
         firefox \
+        dbus \
         pulseaudio \
         pulseaudio-alsa \
         pulseaudio-bluetooth \
@@ -42,6 +43,15 @@ RUN echo "default-server = unix:/run/user/${USER_ID}/pulse/native" >> /etc/pulse
     && rm 90.0* && rm -r user.js*
 
 USER ff
+ENV HOME=/home/ff \
+    XDG_CONFIG_HOME=/home/ff/.config \
+    XDG_CACHE_HOME=/home/ff/.cache \
+    XDG_DATA_HOME=/home/ff/.local/share
+WORKDIR /home/ff
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Create mount parents as ff before Podman mounts the PulseAudio cookie.
+# Otherwise the runtime can create .config as root, blocking Firefox profiles.
+RUN mkdir -p "$XDG_CONFIG_HOME/pulse" "$XDG_CACHE_HOME" "$XDG_DATA_HOME"
+
+ENTRYPOINT ["dbus-run-session", "--", "/entrypoint.sh"]
 CMD []
