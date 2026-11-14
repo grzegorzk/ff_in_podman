@@ -3,6 +3,7 @@ SHELL=/bin/bash
 DOCKER=podman
 
 FF_IMAGE=firefox
+SHM_SIZE=1g
 UUID=$(shell id -u)
 GUID=$(shell id -g)
 UNAME=ff
@@ -31,6 +32,7 @@ run:
 		${WITH_USERNS} \
 		--security-opt label=type:container_runtime_t \
 		--net=host -d --rm \
+		--shm-size=${SHM_SIZE} \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-v /dev/dri:/dev/dri \
 		--device /dev/video0 \
